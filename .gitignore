@@ -1,0 +1,59 @@
+# ==========================
+# SYSTEM & IDE
+# ==========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.git/
+
+# ==========================
+# SPECIFIC FOLDER EXCLUSIONS
+# ==========================
+# Completely ignore the Testing folder (Old backend/Local refs)
+Testing/
+
+# Completely ignore the Misc folder (Zips and samples)
+Misc/
+
+# ==========================
+# CONFIGURATION & HIDDEN FOLDERS
+# ==========================
+# Obsidian Vault Settings (In Docs folder)
+.obsidian/
+
+# Bolt / AI Project settings
+.bolt/
+
+# ==========================
+# BACKEND (PYTHON)
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# --- Data Exclusions ---
+# Ignore large data files in Backend/data/
+Backend/data/*.csv
+Backend/data/*.json
+Backend/data/*.gz
+
+# Note: Keeping config.toml. If it contains API Keys, add it to this list!
+# Backend/data/config.toml
+
+# ==========================
+# FRONTEND (NODE/REACT)
+# ==========================
+node_modules/
+dist/
+build/
+.npm
+*.log
+
+# ==========================
+# TEMP FILES
+# ==========================
+Docs/Temp/

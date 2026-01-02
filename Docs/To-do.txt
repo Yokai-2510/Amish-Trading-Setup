@@ -1,0 +1,17 @@
+- Setup Venv (Done)
+    - requirements.txt
+    - python version 
+
+- Setup Database   
+    - Setup Mongo DB 
+    - Verify connection via python script 
+    - Verfiy Data Structure and Credentials
+
+    - Setup Redis 
+    - Verify connection via python script
+    - Verfiy Verfiy Data Structure and Credentials
+    
+
+- Setup Github 
+- Project Plan and Architecture 
+- Complete the Docs 

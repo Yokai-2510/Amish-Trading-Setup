@@ -1,0 +1,183 @@
+// src/components/strategies/StocksSelectionTab.tsx
+import React, { useState } from 'react';
+import { StrategyConfiguration } from './types';
+import { SelectInput, TextInput } from './common';
+
+// This data can be moved to data.ts later if needed
+const stockCollections = {
+    "NIFTY 50": ["RELIANCE", "TCS", "HDFCBANK", "INFY", "ICICIBANK"],
+    "BANK NIFTY": ["HDFCBANK", "ICICIBANK", "SBIN", "KOTAKBANK", "AXISBANK"],
+    "IT": ["TCS", "INFY", "WIPRO", "HCLTECH", "TECHM"],
+    "PHARMA": ["SUNPHARMA", "DRREDDY", "CIPLA", "DIVISLAB", "BIOCON"]
+};
+const availableStocks = [...new Set(Object.values(stockCollections).flat())].sort();
+
+interface StocksSelectionTabProps {
+  config: StrategyConfiguration['instrument_config'] & { stocks?: { name: string; quantity: number }[] };
+  onConfigChange: (path: string, value: any) => void;
+}
+
+const StocksSelectionTab: React.FC<StocksSelectionTabProps> = ({ config, onConfigChange }) => {
+  const [selectedStock, setSelectedStock] = useState(availableStocks[0]);
+  const [quantity, setQuantity] = useState("1");
+  const [selectedCollection, setSelectedCollection] = useState(Object.keys(stockCollections)[0]);
+  const [collectionQuantity, setCollectionQuantity] = useState("1");
+  const [defaultQuantity, setDefaultQuantity] = useState("1");
+  
+  const stocks = config.stocks || [];
+
+  const handleAddStock = () => {
+    const qty = parseInt(quantity, 10);
+    if (isNaN(qty) || qty <= 0) {
+      alert("Please enter a valid positive quantity.");
+      return;
+    }
+    if (stocks.some(s => s.name === selectedStock)) {
+      alert(`${selectedStock} is already in the list.`);
+      return;
+    }
+    if (stocks.length >= 30) {
+      alert("Maximum limit of 30 stocks reached.");
+      return;
+    }
+    const newStocks = [...stocks, { name: selectedStock, quantity: qty }];
+    onConfigChange('instrument_config.stocks', newStocks);
+  };
+
+  const handleAddCollection = () => {
+    const qty = parseInt(collectionQuantity, 10);
+     if (isNaN(qty) || qty <= 0) {
+      alert("Please enter a valid positive quantity for the collection.");
+      return;
+    }
+    const stocksToAdd = stockCollections[selectedCollection as keyof typeof stockCollections];
+    const newStocks = [...stocks];
+    let addedCount = 0;
+
+    stocksToAdd.forEach(stockName => {
+        if (newStocks.length < 30 && !newStocks.some(s => s.name === stockName)) {
+            newStocks.push({ name: stockName, quantity: qty });
+            addedCount++;
+        }
+    });
+
+    if (addedCount === 0 && stocksToAdd.length > 0) {
+        alert("All stocks from this collection are already in the list or the list is full.");
+    }
+
+    onConfigChange('instrument_config.stocks', newStocks);
+  };
+
+  const handleRemoveStock = (stockName: string) => {
+    const newStocks = stocks.filter(s => s.name !== stockName);
+    onConfigChange('instrument_config.stocks', newStocks);
+  };
+
+  const handleUpdateQuantity = (stockName: string, newQuantity: string) => {
+    const qty = parseInt(newQuantity, 10);
+    if (isNaN(qty) || qty < 0) return;
+    const newStocks = stocks.map(s => s.name === stockName ? { ...s, quantity: qty } : s);
+    onConfigChange('instrument_config.stocks', newStocks);
+  };
+  
+  const handleApplyDefault = () => {
+    const qty = parseInt(defaultQuantity, 10);
+    if (isNaN(qty) || qty <= 0) {
+        alert("Please enter a valid positive default quantity.");
+        return;
+    }
+    const newStocks = stocks.map(s => ({ ...s, quantity: qty }));
+    onConfigChange('instrument_config.stocks', newStocks);
+  };
+
+  const handleClearAll = () => {
+    if (window.confirm("Are you sure you want to clear all selected stocks?")) {
+        onConfigChange('instrument_config.stocks', []);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+        {/* Add Instruments Panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Card for Adding a Single Stock */}
+            <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
+                <label className="text-base font-semibold text-slate-800">Add a Single Stock</label>
+                <div className="flex gap-2">
+                    <SelectInput value={selectedStock} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedStock(e.target.value)} className="flex-grow">
+                        {availableStocks.map(s => <option key={s} value={s}>{s}</option>)}
+                    </SelectInput>
+                    <TextInput type="number" value={quantity} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuantity(e.target.value)} className="w-24" placeholder="Qty" />
+                </div>
+                <button onClick={handleAddStock} className="w-full bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm">Add Stock</button>
+            </div>
+
+            {/* Card for Adding a Collection */}
+            <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
+                <label className="text-base font-semibold text-slate-800">Add from Watchlist</label>
+                <div className="flex gap-2">
+                    <SelectInput value={selectedCollection} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCollection(e.target.value)} className="flex-grow">
+                        {Object.keys(stockCollections).map(c => <option key={c} value={c}>{c}</option>)}
+                    </SelectInput>
+                    <TextInput type="number" value={collectionQuantity} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCollectionQuantity(e.target.value)} className="w-24" placeholder="Qty" />
+                </div>
+                <button onClick={handleAddCollection} className="w-full bg-slate-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-slate-800 text-sm">Add Watchlist</button>
+            </div>
+        </div>
+      
+        {/* Selected Instruments List Card */}
+        <div className="bg-white border border-slate-200 rounded-lg">
+            <div className="p-4 border-b flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h3 className="font-semibold text-lg text-slate-800">Selected Instruments</h3>
+                    <p className="text-sm text-slate-500">Count: {stocks.length}/30</p>
+                </div>
+                 <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-slate-600">Default Qty:</label>
+                    <TextInput type="number" value={defaultQuantity} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDefaultQuantity(e.target.value)} className="w-20" />
+                    <button onClick={handleApplyDefault} className="text-sm bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold px-3 py-1.5 rounded-md">Apply to All</button>
+                    <button onClick={handleClearAll} className="text-sm bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-1.5 rounded-md">Clear All</button>
+                </div>
+            </div>
+
+            <div className="max-h-[30rem] overflow-y-auto">
+                <table className="w-full text-sm">
+                    <thead className="bg-slate-50 sticky top-0">
+                        <tr>
+                            <th className="text-left font-semibold text-slate-600 p-3">Stock</th>
+                            <th className="text-left font-semibold text-slate-600 p-3 w-40">Quantity</th>
+                            <th className="text-right font-semibold text-slate-600 p-3 w-24">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {stocks.length === 0 ? (
+                            <tr>
+                                <td colSpan={3} className="text-center p-8 text-slate-500">No stocks selected.</td>
+                            </tr>
+                        ) : (
+                            stocks.map(stock => (
+                                <tr key={stock.name} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors">
+                                    <td className="p-3 font-medium text-slate-800">{stock.name}</td>
+                                    <td className="p-3">
+                                        <TextInput 
+                                            type="number" 
+                                            value={stock.quantity} 
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUpdateQuantity(stock.name, e.target.value)}
+                                            className="w-24"
+                                        />
+                                    </td>
+                                    <td className="p-3 text-right">
+                                        <button onClick={() => handleRemoveStock(stock.name)} className="text-sm text-red-600 hover:text-red-800 font-medium hover:underline">Remove</button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  );
+};
+
+export default StocksSelectionTab;

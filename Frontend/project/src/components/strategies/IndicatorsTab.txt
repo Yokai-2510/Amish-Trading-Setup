@@ -1,0 +1,59 @@
+// src/components/strategies/IndicatorsTab.tsx
+import React from 'react';
+import { PlusCircle, Edit, Trash2, Power } from 'lucide-react';
+import { Indicator } from './types';
+
+interface IndicatorsTabProps {
+  type: 'entry' | 'exit';
+  indicators: Indicator[];
+  onAdd: () => void;
+  onEdit: (indicator: Indicator) => void;
+  onRemove: (indicatorId: string) => void;
+  onToggle: (indicatorId: string) => void;
+}
+
+const IndicatorsTab: React.FC<IndicatorsTabProps> = ({ type, indicators, onAdd, onEdit, onRemove, onToggle }) => {
+  return (
+    <div>
+        <div className="flex justify-end mb-4">
+            <button onClick={onAdd} className="flex items-center gap-2 bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-indigo-700">
+                <PlusCircle className="w-4 h-4" /> Add Indicator
+            </button>
+        </div>
+        <div className="border border-slate-200 rounded-lg">
+            <div className="grid grid-cols-12 gap-4 p-3 bg-slate-50 text-xs font-semibold text-slate-600 border-b border-slate-200">
+                <div className="col-span-1">Seq.</div>
+                <div className="col-span-2">Type</div>
+                <div className="col-span-3">Name</div>
+                <div className="col-span-1">Logic</div>
+                <div className="col-span-1">Status</div>
+                <div className="col-span-4 text-center">Actions</div>
+            </div>
+            {indicators.length === 0 ? (
+                <p className="text-center text-slate-500 p-8 text-sm">No {type} indicators configured.</p>
+            ) : (
+                indicators.map((indicator, index) => (
+                    <div key={indicator.id} className="grid grid-cols-12 gap-4 items-center p-3 border-b border-slate-100 last:border-b-0 text-sm">
+                        <div className="col-span-1 font-mono text-slate-500">{index + 1}</div>
+                        <div className="col-span-2 text-slate-700">{indicator.type}</div>
+                        <div className="col-span-3 font-semibold text-slate-800">{indicator.name}</div>
+                        <div className="col-span-1 text-slate-600">{indicator.logic}</div>
+                        <div className="col-span-1">
+                            <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${indicator.active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}`}>
+                                {indicator.active ? 'ON' : 'OFF'}
+                            </span>
+                        </div>
+                        <div className="col-span-4 flex justify-center gap-2">
+                            <button onClick={() => onToggle(indicator.id)} className="p-1.5 text-slate-500 hover:bg-slate-100 rounded-md" title={indicator.active ? "Deactivate" : "Activate"}><Power className="w-4 h-4" /></button>
+                            <button onClick={() => onEdit(indicator)} className="p-1.5 text-slate-500 hover:bg-slate-100 rounded-md" title="Edit"><Edit className="w-4 h-4" /></button>
+                            <button onClick={() => onRemove(indicator.id)} className="p-1.5 text-red-500 hover:bg-red-50 rounded-md" title="Remove"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                    </div>
+                ))
+            )}
+        </div>
+    </div>
+  );
+};
+
+export default IndicatorsTab;

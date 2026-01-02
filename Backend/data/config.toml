@@ -1,0 +1,13 @@
+# ==========================================================
+# LOCAL DEVELOPMENT CONFIGURATION
+# ==========================================================
+
+[redis]
+host = "localhost"
+port = 6379
+db = 0
+
+[mongodb]
+# The URI now contains the URL-encoded password to handle special characters
+uri = "mongodb+srv://trading-setup-test:Fumaken%40%232510@trading-setup.kyvatio.mongodb.net/?appName=trading-setup"
+database_name = "trading_platform"

@@ -1,0 +1,92 @@
+// src/components/strategies/indicatorConfigs.ts
+
+export const INDICATOR_CONFIGS: { [key: string]: { params: any[], entry_conditions: any[], exit_conditions: any[] } } = {
+    'MA': {
+        params: [
+            { key: 'ma_length', label: 'MA Period', type: 'number', default: 20 },
+            { key: 'smoothing_method', label: 'MA Type', type: 'select', options: ['SMA', 'EMA', 'WMA'], default: 'SMA' },
+            { key: 'source_data', label: 'Source', type: 'select', options: ['close', 'open', 'high', 'low', 'hl2', 'hlc3', 'ohlc4'], default: 'close' },
+            { key: 'offset', label: 'Offset', type: 'number', default: 0 },
+            { key: 'smoothed_ma_length', label: 'Slow MA Period', type: 'number', default: 50 },
+            { key: 'smoothed_ma_method', label: 'Slow MA Type', type: 'select', options: ['SMA', 'EMA', 'WMA'], default: 'SMA' },
+        ],
+        entry_conditions: [ { id: '1', label: 'Price crosses above MA' }, { id: '2', label: 'Candle closes above MA' }, { id: '3', label: '2 consecutive closes above MA' }, { id: '4', label: '2 consecutive rising closes above MA' }, { id: '5', label: 'Fast MA crosses above Slow MA' } ],
+        exit_conditions: [ { id: '1', label: 'Price crosses below MA' }, { id: '2', label: 'Candle closes below MA' }, { id: '3', label: '2 consecutive closes below MA' }, { id: '4', label: '2 consecutive falling closes below MA' }, { id: '5', label: 'Fast MA crosses below Slow MA' } ]
+    },
+    'RSI': {
+        params: [
+            { key: 'rsi_length', label: 'RSI Period', type: 'number', default: 14 },
+            { key: 'threshold_value', label: 'Threshold', type: 'number', default: 30 },
+            { key: 'smoothing_length', label: 'Smoothing Period', type: 'number', default: 9 },
+            { key: 'smoothing_method', label: 'Smoothing Type', type: 'select', options: ['SMA', 'EMA', 'WMA'], default: 'SMA' },
+        ],
+        entry_conditions: [ { id: '1', label: 'RSI crosses above Smoothed RSI' }, { id: '2', label: 'RSI > Threshold' }, { id: '3', label: 'RSI < Threshold' } ],
+        exit_conditions: [ { id: '1', label: 'RSI crosses below Smoothed RSI' }, { id: '2', label: 'RSI < Threshold' }, { id: '3', label: 'RSI > Threshold' } ]
+    },
+    'MACD': {
+        params: [
+            { key: 'fast_ema_length', label: 'Fast EMA', type: 'number', default: 12 },
+            { key: 'slow_ema_length', label: 'Slow EMA', type: 'number', default: 26 },
+            { key: 'signal_line_length', label: 'Signal Line', type: 'number', default: 9 },
+            { key: 'source_data', label: 'Source', type: 'select', options: ['close', 'open', 'high', 'low', 'hl2', 'hlc3', 'ohlc4'], default: 'close' },
+        ],
+        entry_conditions: [ { id: '1', label: 'MACD crosses above Signal' }, { id: '2', label: '2 consecutive positive Histogram bars' }, { id: '3', label: 'MACD > 0' } ],
+        exit_conditions: [ { id: '1', label: 'MACD crosses below Signal' }, { id: '2', label: '2 consecutive negative Histogram bars' }, { id: '3', label: 'MACD crosses below 0' } ]
+    },
+    'Bollinger Bands': {
+        params: [
+            { key: 'ma_length', label: 'Period', type: 'number', default: 20 },
+            { key: 'standard_deviation_multiplier', label: 'Std Dev', type: 'number', default: 2.0 },
+            { key: 'moving_average_type', label: 'MA Type', type: 'select', options: ['SMA', 'EMA', 'WMA'], default: 'SMA' },
+        ],
+        entry_conditions: [ { id: '1', label: 'Price crosses above Middle Band' }, { id: '2', label: 'Candle closes above Middle Band' }, { id: '3', label: '2 consecutive closes above Middle Band' } ],
+        exit_conditions: [ { id: '1', label: 'Price crosses below Middle Band' }, { id: '2', label: 'Candle closes below Middle Band' }, { id: '3', label: '2 consecutive red closes below Middle Band' }, { id: '4', label: 'Price touches Upper Band' } ]
+    },
+    'Supertrend': {
+        params: [
+            { key: 'atr_length', label: 'ATR Period', type: 'number', default: 10 },
+            { key: 'multiplier_factor', label: 'Multiplier', type: 'number', default: 3.0 },
+        ],
+        entry_conditions: [ { id: '1', label: 'Indicates upward trend' }, { id: '2', label: 'Candle closes above Supertrend' } ],
+        exit_conditions: [ { id: '1', label: 'Indicates downward trend' }, { id: '2', label: 'Price crosses below Supertrend' }, { id: '3', label: 'Candle closes below Supertrend' } ]
+    },
+    'Stochastic RSI': {
+        params: [
+            { key: 'rsi_length', label: 'RSI Period', type: 'number', default: 14 },
+            { key: 'stoch_length', label: 'Stochastic Period', type: 'number', default: 14 },
+            { key: 'k_smoothing_period', label: '%K Smoothing', type: 'number', default: 3 },
+            { key: 'd_smoothing_period', label: '%D Smoothing', type: 'number', default: 3 },
+            { key: 'k_threshold_value', label: '%K Threshold', type: 'number', default: 20 },
+        ],
+        entry_conditions: [ { id: '1', label: '%K crosses above %D' }, { id: '2', label: '%K > Threshold' }, { id: '3', label: '%K < Threshold' }, { id: '4', label: '%K == Threshold' } ],
+        exit_conditions: [ { id: '1', label: '%K crosses below %D' }, { id: '2', label: '%K < Threshold' }, { id: '3', label: '%K > Threshold' }, { id: '4', label: '%K == Threshold' } ]
+    },
+    'ADX': {
+        params: [
+            { key: 'di_length', label: 'DI Period', type: 'number', default: 14 },
+            { key: 'adx_smoothing_period', label: 'ADX Smoothing', type: 'number', default: 14 },
+            { key: 'adx_threshold_value', label: 'ADX Threshold', type: 'number', default: 25 },
+        ],
+        entry_conditions: [ { id: '1', label: 'ADX > Threshold' }, { id: '2', label: 'ADX < Threshold' }, { id: '3', label: 'ADX == Threshold' } ],
+        exit_conditions: [ { id: '1', label: 'ADX < Threshold' }, { id: '2', label: 'ADX > Threshold' } ]
+    },
+    'Fibonacci': {
+        params: [
+            { key: 'lookback_period', label: 'Lookback Period', type: 'number', default: 20 },
+            { key: 'fibonacci_level', label: 'Fib Level', type: 'select', options: ['0.236', '0.382', '0.5', '0.618', '0.786'], default: '0.5' },
+            { key: 'reaction_tolerance', label: 'Tolerance (%)', type: 'number', default: 0.01 },
+        ],
+        entry_conditions: [ { id: '1', label: 'Price near Fib level' }, { id: '2', label: 'Price crosses above Fib level' } ],
+        exit_conditions: [ { id: '1', label: 'Price near Fib level' }, { id: '2', label: 'Price crosses below Fib level' } ]
+    },
+    'Up Trend': {
+        params: [ { key: 'uptrend_candles', label: 'Consecutive Candles', type: 'number', default: 2 } ],
+        entry_conditions: [ { id: '1', label: 'Consecutive green candles closing higher' } ],
+        exit_conditions: []
+    },
+    'Down Trend': {
+        params: [ { key: 'downtrend_candles', label: 'Consecutive Candles', type: 'number', default: 3 } ],
+        entry_conditions: [],
+        exit_conditions: [ { id: '1', label: 'Consecutive red candles closing lower' } ]
+    },
+};

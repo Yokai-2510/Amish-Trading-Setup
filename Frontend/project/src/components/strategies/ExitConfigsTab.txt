@@ -1,0 +1,31 @@
+// src/components/strategies/ExitConfigsTab.tsx
+import React from 'react';
+import { StrategyConfiguration } from './types';
+import { FormRow, SelectInput, TextInput, ToggleSwitch } from './common';
+
+interface ExitConfigsTabProps {
+  config: StrategyConfiguration['exit_config'];
+  onConfigChange: (path: string, value: any) => void;
+}
+
+const ExitConfigsTab: React.FC<ExitConfigsTabProps> = ({ config, onConfigChange }) => {
+  return (
+    <div>
+        <FormRow label="Exit Conditions Delay (s)"><TextInput type="number" value={config.exit_check_interval} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('exit_config.exit_check_interval', Number(e.target.value))} /></FormRow>
+        <FormRow label="Chart Type"><SelectInput value={config.chart_type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('exit_config.chart_type', e.target.value)}><option>candlestick</option><option>heikenashi</option><option>renko</option></SelectInput></FormRow>
+        <FormRow label="Exit Indicators Time Frame"><SelectInput value={config.time_frame} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('exit_config.time_frame', e.target.value)}><option>1m</option><option>3m</option><option>5m</option><option>10m</option><option>15m</option></SelectInput></FormRow>
+        <FormRow label="Stop Loss"><ToggleSwitch active={config.stop_loss.active} onClick={() => onConfigChange('exit_config.stop_loss.active', !config.stop_loss.active)} /></FormRow>
+        <FormRow label="SL Type" indented><SelectInput value={config.stop_loss.type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('exit_config.stop_loss.type', e.target.value)} disabled={!config.stop_loss.active}><option>percentage</option><option>points</option></SelectInput></FormRow>
+        <FormRow label="SL Value" indented><TextInput type="number" value={config.stop_loss.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('exit_config.stop_loss.value', Number(e.target.value))} disabled={!config.stop_loss.active} /></FormRow>
+        <FormRow label="Target Profit"><ToggleSwitch active={config.target_profit.active} onClick={() => onConfigChange('exit_config.target_profit.active', !config.target_profit.active)} /></FormRow>
+        <FormRow label="TP Type" indented><SelectInput value={config.target_profit.type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('exit_config.target_profit.type', e.target.value)} disabled={!config.target_profit.active}><option>percentage</option><option>points</option></SelectInput></FormRow>
+        <FormRow label="TP Value" indented><TextInput type="number" value={config.target_profit.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('exit_config.target_profit.value', Number(e.target.value))} disabled={!config.target_profit.active} /></FormRow>
+        <FormRow label="Time Based Exit"><ToggleSwitch active={config.time_based_exit.active} onClick={() => onConfigChange('exit_config.time_based_exit.active', !config.time_based_exit.active)} /></FormRow>
+        <FormRow label="Exit Time Type" indented><SelectInput value={config.time_based_exit.type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('exit_config.time_based_exit.type', e.target.value)} disabled={!config.time_based_exit.active}><option>fixed</option><option>from_entry_time</option></SelectInput></FormRow>
+        <FormRow label="Fixed Exit Time" indented><TextInput type="time" step="1" value={config.time_based_exit.fixed_exit_time} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('exit_config.time_based_exit.fixed_exit_time', e.target.value)} disabled={!config.time_based_exit.active || config.time_based_exit.type !== 'fixed'} /></FormRow>
+        <FormRow label="Time from Entry" indented><TextInput value={config.time_based_exit.from_entry_time} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('exit_config.time_based_exit.from_entry_time', e.target.value)} placeholder="e.g., 30M, 1H" disabled={!config.time_based_exit.active || config.time_based_exit.type !== 'from_entry_time'} /></FormRow>
+    </div>
+  );
+};
+
+export default ExitConfigsTab;

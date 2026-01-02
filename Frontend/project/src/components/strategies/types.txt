@@ -1,0 +1,21 @@
+// src/components/strategies/types.ts
+
+export interface Indicator {
+  id: string;
+  type: string;
+  name: string;
+  logic: 'FIRST' | 'AND' | 'OR';
+  active: boolean;
+  parameters: { [key: string]: any };
+  active_condition: string;
+}
+
+export interface StrategyConfiguration {
+  set_config: { set_id: string; set_name: string; description: string; set_active_status: boolean; };
+  instrument_config: { underlying_symbol: string; underlying_key: string; option_type: 'CE' | 'PE'; trade_type: 'Buy' | 'Sell'; expiry: string; strike_selection: 'ATM' | 'ITM' | 'OTM' | 'Custom'; strike_offset: number; custom_strike_value: string; };
+  trade_parameters: { order_type: 'MARKET' | 'LIMIT'; product_type: 'INTRADAY' | 'DELIVERY'; quantity_type: 'Lots' | 'Quantity'; quantity_value: number; trade_mode: 'live' | 'paper'; bypass_order_confirmation: boolean; broker: string; };
+  entry_config: { start_time: string; end_time: string; exclude_time_active: boolean; exclusion_start_time: string; exclusion_end_time: string; entry_check_interval: number; chart_type: 'heikenashi' | 'renko' | 'candlestick'; time_frame: string; };
+  exit_config: { exit_check_interval: number; chart_type: 'heikenashi' | 'renko' | 'candlestick'; time_frame: string; stop_loss: { active: boolean; type: 'percentage' | 'points'; value: number }; target_profit: { active: boolean; type: 'percentage' | 'points'; value: number }; time_based_exit: { active: boolean; type: 'fixed' | 'from_entry_time'; fixed_exit_time: string; from_entry_time: string }; };
+  entry_indicators: Indicator[];
+  exit_indicators: Indicator[];
+}

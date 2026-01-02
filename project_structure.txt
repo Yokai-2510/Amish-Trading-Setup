@@ -1,0 +1,228 @@
+Project Tree for: Amish Trading Setup
+========================================
+├── 📂 Backend/
+│   ├── 📂 data/
+│   │   ├── 📄 all_option_underlyings_and_expiries.csv (29.9 KB)
+│   │   ├── 📄 all_stocks_list.csv (63.4 KB)
+│   │   ├── 📄 complete.json (43.8 MB)
+│   │   └── 📄 config.toml (441.0 B)
+│   ├── 📂 docs/
+│   ├── 📂 scripts/
+│   │   └── 📄 seed_database.py (7.5 KB)
+│   ├── 📂 source/
+│   │   ├── 📂 backend_api/
+│   │   │   ├── 📂 routers/
+│   │   │   │   ├── 📄 backtest.py (0.0 B)
+│   │   │   │   ├── 📄 dashboard.py (0.0 B)
+│   │   │   │   └── 📄 strategies.py (0.0 B)
+│   │   │   └── 📄 main.py (0.0 B)
+│   │   ├── 📂 data_ingestion/
+│   │   │   ├── 📂 indicator_library/
+│   │   │   │   ├── 📄 ADX.py (0.0 B)
+│   │   │   │   ├── 📄 BB.py (0.0 B)
+│   │   │   │   ├── 📄 CCI.py (0.0 B)
+│   │   │   │   ├── 📄 Fibonacci.py (0.0 B)
+│   │   │   │   ├── 📄 MA.py (0.0 B)
+│   │   │   │   ├── 📄 MACD.py (0.0 B)
+│   │   │   │   ├── 📄 RSI.py (0.0 B)
+│   │   │   │   ├── 📄 Stoch_RSI.py (0.0 B)
+│   │   │   │   ├── 📄 Supertrend.py (0.0 B)
+│   │   │   │   ├── 📄 Trend_Analysis.py (0.0 B)
+│   │   │   │   └── 📄 VolumeAnalysis.py (0.0 B)
+│   │   │   ├── 📄 candle_processor.py (0.0 B)
+│   │   │   ├── 📄 indicator_processor.py (0.0 B)
+│   │   │   └── 📄 websocket_manager.py (0.0 B)
+│   │   ├── 📂 evaluation/
+│   │   │   ├── 📄 backtester.py (0.0 B)
+│   │   │   ├── 📄 live_evaluator.py (0.0 B)
+│   │   │   ├── 📄 options_logic.py (0.0 B)
+│   │   │   └── 📄 stocks_logic.py (0.0 B)
+│   │   ├── 📂 execution/
+│   │   │   └── 📄 execution_worker.py (0.0 B)
+│   │   └── 📂 utilities/
+│   │       ├── 📂 clients/
+│   │       │   ├── 📄 mongo_client.py (2.1 KB)
+│   │       │   └── 📄 redis_client.py (2.0 KB)
+│   │       ├── 📄 config_loader.py (1.4 KB)
+│   │       ├── 📄 data_models.py (4.6 KB)
+│   │       ├── 📄 instrument_manager.py (5.9 KB)
+│   │       └── 📄 login_manager.py (8.3 KB)
+│   ├── 📂 tests/
+│   │   ├── 📄 test_connections.py (4.3 KB)
+│   │   └── 📄 test_instruments.py (4.6 KB)
+│   └── 📄 main.py (761.0 B)
+├── 📂 Docs/
+│   ├── 📂 .obsidian/
+│   │   ├── 📄 app.json (33.0 B)
+│   │   ├── 📄 appearance.json (2.0 B)
+│   │   ├── 📄 core-plugins.json (698.0 B)
+│   │   ├── 📄 graph.json (493.0 B)
+│   │   └── 📄 workspace.json (6.8 KB)
+│   ├── 📂 Temp/
+│   │   ├── 📂 Backend/
+│   │   │   ├── 📄 Backend Overview.md (556.0 B)
+│   │   │   ├── 📄 Group 1 - Stocks.md (3.4 KB)
+│   │   │   ├── 📄 Group 2 - Options.md (3.5 KB)
+│   │   │   ├── 📄 Indicator Modules Documentation.md (12.0 KB)
+│   │   │   ├── 📄 Modular Design.md (30.0 KB)
+│   │   │   ├── 📄 Options Evaluation Plan.md (4.7 KB)
+│   │   │   ├── 📄 Strategy Configurations Overview.md (1.3 KB)
+│   │   │   ├── 📄 Technical Modular Management.md (346.0 B)
+│   │   │   └── 📄 Technical.md (4.6 KB)
+│   │   ├── 📂 UI/
+│   │   │   ├── 📄 Connections.md (4.7 KB)
+│   │   │   ├── 📄 Dashboard.md (2.9 KB)
+│   │   │   └── 📄 UI Overvciew.md (3.4 KB)
+│   │   ├── 📂 Untitled/
+│   │   ├── 📂 Untitled 1/
+│   │   ├── 📂 Untitled 2/
+│   │   ├── 📄 AMISHGHEEWALA 05012025.txt (7.0 KB)
+│   │   ├── 📄 code_plan.txt (2.6 KB)
+│   │   ├── 📄 directory_view.txt (2.1 KB)
+│   │   ├── 📄 Group 1 - Stocks.docx (11.8 KB)
+│   │   ├── 📄 Group 2 - Options.docx (11.8 KB)
+│   │   ├── 📄 Monitor.md (5.4 KB)
+│   │   ├── 📄 Strategies.md (7.4 KB)
+│   │   ├── 📄 Strategy Configurations Overview.doc (27.0 KB)
+│   │   └── 📄 Untitled.md (0.0 B)
+│   ├── 📂 Untitled/
+│   ├── 📂 Untitled 1/
+│   ├── 📄 Data Architecture.md (7.0 KB)
+│   ├── 📄 Modular Design.md (7.8 KB)
+│   ├── 📄 System Architecture.md (5.4 KB)
+│   ├── 📄 To-do.txt (383.0 B)
+│   └── 📄 Trading Setup.md (15.4 KB)
+├── 📂 Frontend/
+│   ├── 📂 project/
+│   │   ├── 📂 .bolt/
+│   │   │   ├── 📄 config.json (39.0 B)
+│   │   │   └── 📄 prompt (401.0 B)
+│   │   ├── 📂 dist/
+│   │   │   ├── 📂 assets/
+│   │   │   │   ├── 📄 index-BNgn7kfn.css (27.4 KB)
+│   │   │   │   └── 📄 index-D-S3MG5V.js (229.2 KB)
+│   │   │   └── 📄 index.html (462.0 B)
+│   │   ├── 📂 src/
+│   │   │   ├── 📂 components/
+│   │   │   │   ├── 📂 strategies/
+│   │   │   │   │   ├── 📄 common.txt (1.6 KB)
+│   │   │   │   │   ├── 📄 data.txt (5.7 KB)
+│   │   │   │   │   ├── 📄 EntryConfigsTab.txt (2.5 KB)
+│   │   │   │   │   ├── 📄 ExitConfigsTab.txt (4.2 KB)
+│   │   │   │   │   ├── 📄 IndicatorConfigModal.txt (7.0 KB)
+│   │   │   │   │   ├── 📄 indicatorConfigs.txt (7.0 KB)
+│   │   │   │   │   ├── 📄 IndicatorsTab.txt (3.4 KB)
+│   │   │   │   │   ├── 📄 InstrumentSelectionTab.txt (4.5 KB)
+│   │   │   │   │   ├── 📄 StocksSelectionTab.txt (9.3 KB)
+│   │   │   │   │   ├── 📄 StrategyList.txt (2.8 KB)
+│   │   │   │   │   ├── 📄 TradeConfigsTab.txt (3.5 KB)
+│   │   │   │   │   └── 📄 types.txt (1.6 KB)
+│   │   │   │   ├── 📄 Connections.tsx (17.1 KB)
+│   │   │   │   ├── 📄 Dashboard.tsx (10.6 KB)
+│   │   │   │   ├── 📄 LiveMonitor.tsx (9.2 KB)
+│   │   │   │   ├── 📄 SelectionModal.tsx (3.9 KB)
+│   │   │   │   ├── 📄 Sidebar.tsx (3.8 KB)
+│   │   │   │   └── 📄 Strategies.txt (11.8 KB)
+│   │   │   ├── 📄 App.tsx (12.8 KB)
+│   │   │   ├── 📄 index.css (1.5 KB)
+│   │   │   ├── 📄 main.tsx (233.0 B)
+│   │   │   └── 📄 vite-env.d.ts (37.0 B)
+│   │   ├── 📄 .gitignore (258.0 B)
+│   │   ├── 📄 eslint.config.js (739.0 B)
+│   │   ├── 📄 index.html (364.0 B)
+│   │   ├── 📄 package-lock.json (139.6 KB)
+│   │   ├── 📄 package.json (810.0 B)
+│   │   ├── 📄 postcss.config.js (81.0 B)
+│   │   ├── 📄 tailwind.config.js (170.0 B)
+│   │   ├── 📄 todo.txt (4.8 KB)
+│   │   ├── 📄 tsconfig.app.json (552.0 B)
+│   │   ├── 📄 tsconfig.json (119.0 B)
+│   │   ├── 📄 tsconfig.node.json (479.0 B)
+│   │   └── 📄 vite.config.ts (220.0 B)
+│   └── 📄 package-lock.json (104.0 B)
+├── 📂 Testing/
+│   ├── 📂 Backend/
+│   │   ├── 📂 background_process/
+│   │   │   ├── 📄 execute_processes.py (0.0 B)
+│   │   │   └── 📄 position_reconciler.py (4.4 KB)
+│   │   ├── 📂 brokers_api/
+│   │   │   ├── 📄 api_candle_data.py (4.7 KB)
+│   │   │   ├── 📄 login.py (9.5 KB)
+│   │   │   ├── 📄 trades.py (0.0 B)
+│   │   │   └── 📄 websocket_data.py (28.9 KB)
+│   │   ├── 📂 candle_data/
+│   │   │   ├── 📄 candle_data_plan.txt (1.1 KB)
+│   │   │   ├── 📄 candle_merger.py (4.0 KB)
+│   │   │   ├── 📄 candle_utils.py (4.4 KB)
+│   │   │   └── 📄 process_candles.py (8.2 KB)
+│   │   ├── 📂 docs/
+│   │   │   ├── 📄 evaluation.txt (16.0 KB)
+│   │   │   ├── 📄 limitations.txt (134.0 B)
+│   │   │   ├── 📄 note.txt (1.5 KB)
+│   │   │   ├── 📄 redis_overview.txt (7.9 KB)
+│   │   │   ├── 📄 requirements.txt (73.0 B)
+│   │   │   ├── 📄 technical_indicators.md (12.0 KB)
+│   │   │   └── 📄 To-Do.txt (860.0 B)
+│   │   ├── 📂 evaluation/
+│   │   │   ├── 📄 evaluation.txt (12.9 KB)
+│   │   │   ├── 📄 evaluation_test_modify.py (7.6 KB)
+│   │   │   ├── 📄 evaluation_test_status.py (5.4 KB)
+│   │   │   ├── 📄 evaluation_utils.py (7.8 KB)
+│   │   │   ├── 📄 execution_handler.py (9.7 KB)
+│   │   │   ├── 📄 main_evaluator.py (3.6 KB)
+│   │   │   ├── 📄 options_evaluation_utils.py (12.7 KB)
+│   │   │   └── 📄 options_evaluator.py (4.0 KB)
+│   │   ├── 📂 indicators/
+│   │   │   ├── 📂 indicator_modules/
+│   │   │   │   ├── 📄 ADX.py (13.0 KB)
+│   │   │   │   ├── 📄 BB.py (17.3 KB)
+│   │   │   │   ├── 📄 Fibonacci.py (3.0 KB)
+│   │   │   │   ├── 📄 MA.py (16.2 KB)
+│   │   │   │   ├── 📄 MACD.py (13.4 KB)
+│   │   │   │   ├── 📄 RSI.py (11.8 KB)
+│   │   │   │   ├── 📄 Stoch_RSI.py (14.0 KB)
+│   │   │   │   ├── 📄 Supertrend.py (17.8 KB)
+│   │   │   │   └── 📄 Trend_Analysis.py (10.8 KB)
+│   │   │   ├── 📄 entry_indicators.py (20.0 KB)
+│   │   │   ├── 📄 exit_indicators.py (17.6 KB)
+│   │   │   └── 📄 process_indicators.py (4.2 KB)
+│   │   ├── 📂 source/
+│   │   │   ├── 📄 active_stocks_positions.json (566.0 B)
+│   │   │   ├── 📄 complete.json (42.9 MB)
+│   │   │   ├── 📄 complete.json.gz (2.6 MB)
+│   │   │   ├── 📄 credentials.json (1.7 KB)
+│   │   │   ├── 📄 flags.json (270.0 B)
+│   │   │   ├── 📄 ind_nifty100list.csv (6.5 KB)
+│   │   │   ├── 📄 instruments.json (36.9 MB)
+│   │   │   ├── 📄 strategy_options.json (4.7 KB)
+│   │   │   └── 📄 strategy_stocks.json (4.8 KB)
+│   │   ├── 📂 testing/
+│   │   │   ├── 📄 add_instruments.py (15.3 KB)
+│   │   │   ├── 📄 indicator2test.py (6.0 KB)
+│   │   │   ├── 📄 notes.txt (29.1 KB)
+│   │   │   ├── 📄 positions.py (1.3 KB)
+│   │   │   ├── 📄 stocks_list.py (2.7 KB)
+│   │   │   ├── 📄 test.py (16.5 KB)
+│   │   │   ├── 📄 test_indicators.py (10.6 KB)
+│   │   │   ├── 📄 tweak_config.py (4.8 KB)
+│   │   │   ├── 📄 websocket_simple.py (1.4 KB)
+│   │   │   └── 📄 websocket_test.py (18.0 KB)
+│   │   ├── 📂 utils/
+│   │   │   ├── 📄 background_processes.py (0.0 B)
+│   │   │   ├── 📄 instrument_keys.py (24.0 KB)
+│   │   │   └── 📄 redis_setup.py (16.1 KB)
+│   │   ├── 📄 .gitignore (290.0 B)
+│   │   └── 📄 main.py (2.3 KB)
+│   └── 📂 Misc/
+│       ├── 📂 project-bolt-sb1-gdxtgh2z/
+│       ├── 📂 pythonsample valvenet data api/
+│       │   └── 📂 pythonsample/
+│       │       ├── 📄 app.py (6.9 KB)
+│       │       ├── 📄 instructions.txt (584.0 B)
+│       │       ├── 📄 requirements.txt (153.0 B)
+│       │       └── 📄 Socketcluster.py (9.0 KB)
+│       ├── 📄 project-bolt-sb1-gdxtgh2z.zip (51.8 KB)
+│       └── 📄 pythonsample valvenet data api.zip (9.0 KB)
+├── 📄 .gitignore (0.0 B)
+├── 📄 readme.md (0.0 B)
+└── 📄 requirements.txt (299.0 B)

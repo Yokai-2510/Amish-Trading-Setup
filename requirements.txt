@@ -1,0 +1,27 @@
+# Core API Server
+fastapi
+uvicorn[standard]
+pydantic
+
+# Database Drivers
+pymongo
+redis
+rejson
+
+# Data Processing & Analysis
+pandas
+numpy
+pandas-ta
+
+# Broker API & Networking
+upstox-python-sdk
+requests
+websockets
+
+# Authentication & Automation
+playwright
+pyotp
+
+# Configuration & Utilities
+toml
+pytz

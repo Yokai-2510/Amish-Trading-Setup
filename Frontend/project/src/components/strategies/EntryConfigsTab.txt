@@ -1,0 +1,26 @@
+// src/components/strategies/EntryConfigsTab.tsx
+import React from 'react';
+import { StrategyConfiguration } from './types';
+import { FormRow, SelectInput, TextInput, ToggleSwitch } from './common';
+
+interface EntryConfigsTabProps {
+  config: StrategyConfiguration['entry_config'];
+  onConfigChange: (path: string, value: any) => void;
+}
+
+const EntryConfigsTab: React.FC<EntryConfigsTabProps> = ({ config, onConfigChange }) => {
+  return (
+    <div>
+      <FormRow label="Start Time"><TextInput type="time" step="1" value={config.start_time} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('entry_config.start_time', e.target.value)} /></FormRow>
+      <FormRow label="End Time"><TextInput type="time" step="1" value={config.end_time} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('entry_config.end_time', e.target.value)} /></FormRow>
+      <FormRow label="Exclude Entry Time"><ToggleSwitch active={config.exclude_time_active} onClick={() => onConfigChange('entry_config.exclude_time_active', !config.exclude_time_active)} /></FormRow>
+      <FormRow label="Exclusion Start" indented><TextInput type="time" step="1" value={config.exclusion_start_time} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('entry_config.exclusion_start_time', e.target.value)} disabled={!config.exclude_time_active} /></FormRow>
+      <FormRow label="Exclusion End" indented><TextInput type="time" step="1" value={config.exclusion_end_time} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('entry_config.exclusion_end_time', e.target.value)} disabled={!config.exclude_time_active} /></FormRow>
+      <FormRow label="Entry Conditions Delay (s)"><TextInput type="number" value={config.entry_check_interval} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('entry_config.entry_check_interval', Number(e.target.value))} /></FormRow>
+      <FormRow label="Chart Type"><SelectInput value={config.chart_type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('entry_config.chart_type', e.target.value)}><option>candlestick</option><option>heikenashi</option><option>renko</option></SelectInput></FormRow>
+      <FormRow label="Entry Indicators Time Frame"><SelectInput value={config.time_frame} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('entry_config.time_frame', e.target.value)}><option>1m</option><option>3m</option><option>5m</option><option>10m</option><option>15m</option></SelectInput></FormRow>
+    </div>
+  );
+};
+
+export default EntryConfigsTab;

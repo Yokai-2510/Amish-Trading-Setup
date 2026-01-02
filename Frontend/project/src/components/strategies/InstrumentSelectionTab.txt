@@ -1,0 +1,61 @@
+// src/components/strategies/InstrumentSelectionTab.tsx
+import React, { useState } from 'react';
+import { Search } from 'lucide-react';
+import { StrategyConfiguration } from './types';
+import { FormRow, SelectInput, TextInput } from './common';
+
+interface InstrumentSelectionTabProps {
+  config: StrategyConfiguration['instrument_config'];
+  onConfigChange: (path: string, value: any) => void;
+  mockInstruments: any[];
+}
+
+const InstrumentSelectionTab: React.FC<InstrumentSelectionTabProps> = ({ config, onConfigChange, mockInstruments }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
+
+    const filteredInstruments = mockInstruments.filter(i => i.symbol.toLowerCase().includes(searchTerm.toLowerCase()));
+    const availableExpiries = mockInstruments.find(i => i.symbol === config.underlying_symbol)?.expiries || [];
+    
+    const handleSelectInstrument = (instrument: typeof mockInstruments[0]) => {
+        onConfigChange('instrument_config.underlying_symbol', instrument.symbol);
+        onConfigChange('instrument_config.underlying_key', instrument.key);
+        onConfigChange('instrument_config.expiry', instrument.expiries[0] || '');
+        setIsSearching(false);
+        setSearchTerm('');
+    };
+
+    return (
+      <div>
+        <FormRow label="Select Option"> {/* <-- RENAMED */}
+            <div className="flex items-center justify-between p-2 border border-slate-300 rounded-lg bg-slate-50/50">
+                <div>
+                    <p className="font-semibold text-slate-800">{config.underlying_symbol}</p>
+                    <p className="text-xs text-slate-500 font-mono">{config.underlying_key}</p>
+                </div>
+                <button onClick={() => setIsSearching(!isSearching)} className="text-sm text-indigo-600 font-semibold hover:underline px-2">{isSearching ? 'Cancel' : 'Change'}</button>
+            </div>
+        </FormRow>
+
+        {isSearching && (
+        <div className="my-2 border border-slate-300 rounded-lg p-2 bg-white shadow-lg">
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <TextInput placeholder="Search for Nifty, BankNifty, Zomato..." value={searchTerm} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)} className="pl-9" />
+            </div>
+            <div className="max-h-48 overflow-y-auto mt-2">
+                {filteredInstruments.map(inst => ( <button key={inst.key} onClick={() => handleSelectInstrument(inst)} className="w-full text-left p-2 hover:bg-indigo-50 rounded-md text-sm">{inst.symbol}</button> ))}
+            </div>
+        </div>
+        )}
+
+        <FormRow label="Expiry"><SelectInput value={config.expiry} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('instrument_config.expiry', e.target.value)}>{availableExpiries.map((ex: string) => <option key={ex} value={ex}>{ex}</option>)}</SelectInput></FormRow>        <FormRow label="Option Type"><SelectInput value={config.option_type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('instrument_config.option_type', e.target.value)}><option value="CE">CE</option><option value="PE">PE</option></SelectInput></FormRow>
+        <FormRow label="Trade Type"><SelectInput value={config.trade_type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('instrument_config.trade_type', e.target.value)}><option value="Buy">Buy</option><option value="Sell">Sell</option></SelectInput></FormRow>
+        <FormRow label="Strike Selection"><SelectInput value={config.strike_selection} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('instrument_config.strike_selection', e.target.value)}><option>ATM</option><option>ITM</option><option>OTM</option><option>Custom</option></SelectInput></FormRow>
+        <FormRow label="Strike Offset"><TextInput type="number" value={config.strike_offset} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('instrument_config.strike_offset', Number(e.target.value))} /></FormRow>
+        <FormRow label="Custom Strike"><TextInput type="text" value={config.custom_strike_value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('instrument_config.custom_strike_value', e.target.value)} disabled={config.strike_selection !== 'Custom'} /></FormRow>
+      </div>
+    );
+};
+
+export default InstrumentSelectionTab;

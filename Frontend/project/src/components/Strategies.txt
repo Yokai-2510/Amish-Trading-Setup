@@ -1,0 +1,196 @@
+// src/components/Strategies.tsx
+import React, { useState } from 'react';
+import { Save, LogIn, LogOut, BarChart, Target, Package, TrendingUp, Edit, Check, X, Building2 } from 'lucide-react';
+import { StrategyConfiguration, Indicator } from './strategies/types';
+import { mockStrategyData, mockInstruments } from './strategies/data';
+
+// Child Component Imports
+import StrategyList from './strategies/StrategyList';
+import InstrumentSelectionTab from './strategies/InstrumentSelectionTab';
+import StocksSelectionTab from './strategies/StocksSelectionTab';
+import TradeConfigsTab from './strategies/TradeConfigsTab';
+import EntryConfigsTab from './strategies/EntryConfigsTab'; 
+import ExitConfigsTab from './strategies/ExitConfigsTab';
+import IndicatorsTab from './strategies/IndicatorsTab';
+import IndicatorConfigModal from './strategies/IndicatorConfigModal';
+import { ToggleSwitch } from './strategies/common';
+
+const TABS = { 
+    options: [ 
+        { id: 'instrument_selection', label: 'Option', icon: Package }, // <-- RENAMED
+        { id: 'trade_configs', label: 'Trade', icon: TrendingUp }, 
+        { id: 'entry_configs', label: 'Entry', icon: LogIn }, 
+        { id: 'entry_indicators', label: 'Entry Indicators', icon: BarChart }, 
+        { id: 'exit_configs', label: 'Exit', icon: LogOut }, 
+        { id: 'exit_indicators', label: 'Exit Indicators', icon: Target }, 
+    ],
+    stocks: [
+        { id: 'stocks_selection', label: 'Stocks', icon: Building2 }, // <-- RENAMED
+        { id: 'trade_configs', label: 'Trade', icon: TrendingUp }, 
+        { id: 'entry_configs', label: 'Entry', icon: LogIn }, 
+        { id: 'entry_indicators', label: 'Entry Indicators', icon: BarChart }, 
+        { id: 'exit_configs', label: 'Exit', icon: LogOut }, 
+        { id: 'exit_indicators', label: 'Exit Indicators', icon: Target }, 
+    ]
+};
+
+const Strategies: React.FC = () => {
+    // ... (All the state management and handler logic from the previous correct version remains unchanged)
+    const [strategyData, setStrategyData] = useState(mockStrategyData);
+    const [selectedSetId, setSelectedSetId] = useState<string>('option_set_1');
+    const [isEditingHeader, setIsEditingHeader] = useState(false);
+    const [tempSetName, setTempSetName] = useState('');
+    const [tempSetDescription, setTempSetDescription] = useState('');
+    const activeConfig = strategyData[selectedSetId];
+    
+    const strategyType = selectedSetId.startsWith('stock') ? 'stocks' : 'options';
+    const [activeTab, setActiveTab] = useState(TABS[strategyType][0].id);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalConfig, setModalConfig] = useState<{ type: 'entry' | 'exit', indicatorToEdit?: Indicator }>({ type: 'entry' });
+
+    const handleSetSelection = (setId: string) => {
+        setSelectedSetId(setId);
+        const newStrategyType = setId.startsWith('stock') ? 'stocks' : 'options';
+        setActiveTab(TABS[newStrategyType][0].id);
+        setIsEditingHeader(false);
+    };
+    
+    const handleConfigChange = (path: string, value: any) => {
+        setStrategyData(prev => {
+            const keys = path.split('.');
+            const newConfig = JSON.parse(JSON.stringify(prev[selectedSetId]));
+            let current = newConfig;
+            for (let i = 0; i < keys.length - 1; i++) { current = current[keys[i]]; }
+            current[keys[keys.length - 1]] = value;
+            return { ...prev, [selectedSetId]: newConfig };
+        });
+    };
+
+    const handleEditHeader = () => {
+        setTempSetName(activeConfig.set_config.set_name);
+        setTempSetDescription(activeConfig.set_config.description);
+        setIsEditingHeader(true);
+    };
+    
+    const handleSaveHeader = () => {
+        handleConfigChange('set_config.set_name', tempSetName);
+        handleConfigChange('set_config.description', tempSetDescription);
+        setIsEditingHeader(false);
+    };
+
+    const handleOpenModal = (type: 'entry' | 'exit', indicatorToEdit?: Indicator) => {
+        setModalConfig({ type, indicatorToEdit });
+        setIsModalOpen(true);
+    };
+
+    const handleSaveIndicator = (indicator: Indicator) => {
+        const key = `${modalConfig.type}_indicators` as 'entry_indicators' | 'exit_indicators';
+        const existingIndicators = activeConfig[key] || [];
+        if (modalConfig.indicatorToEdit) {
+            const updated = existingIndicators.map(i => i.id === modalConfig.indicatorToEdit!.id ? indicator : i);
+            handleConfigChange(key, updated);
+        } else {
+            handleConfigChange(key, [...existingIndicators, indicator]);
+        }
+        setIsModalOpen(false);
+    };
+
+    const handleRemoveIndicator = (type: 'entry' | 'exit', indicatorId: string) => {
+        const key = `${type}_indicators` as 'entry_indicators' | 'exit_indicators';
+        let updated = activeConfig[key].filter(i => i.id !== indicatorId);
+        if (updated.length > 0 && updated[0].logic !== 'FIRST') {
+            updated[0].logic = 'FIRST';
+        }
+        handleConfigChange(key, updated);
+    };
+    
+    const handleToggleIndicator = (type: 'entry' | 'exit', indicatorId: string) => {
+        const key = `${type}_indicators` as 'entry_indicators' | 'exit_indicators';
+        const updated = activeConfig[key].map(i => i.id === indicatorId ? { ...i, active: !i.active } : i);
+        handleConfigChange(key, updated);
+    };
+
+    const renderContent = () => {
+        if (!activeConfig) return <p>Loading strategy...</p>;
+        switch (activeTab) {
+            case 'instrument_selection': return <InstrumentSelectionTab config={activeConfig.instrument_config} onConfigChange={handleConfigChange} mockInstruments={mockInstruments} />;
+            case 'stocks_selection': return <StocksSelectionTab config={activeConfig.instrument_config} onConfigChange={handleConfigChange} />;
+            case 'trade_configs': return <TradeConfigsTab config={activeConfig.trade_parameters} onConfigChange={handleConfigChange} />;
+            case 'entry_configs': return <EntryConfigsTab config={activeConfig.entry_config} onConfigChange={handleConfigChange} />;
+            case 'exit_configs': return <ExitConfigsTab config={activeConfig.exit_config} onConfigChange={handleConfigChange} />;
+            case 'entry_indicators': return <IndicatorsTab type="entry" indicators={activeConfig.entry_indicators} onAdd={() => handleOpenModal('entry')} onEdit={(ind) => handleOpenModal('entry', ind)} onRemove={(id) => handleRemoveIndicator('entry', id)} onToggle={(id) => handleToggleIndicator('entry', id)} />;
+            case 'exit_indicators': return <IndicatorsTab type="exit" indicators={activeConfig.exit_indicators} onAdd={() => handleOpenModal('exit')} onEdit={(ind) => handleOpenModal('exit', ind)} onRemove={(id) => handleRemoveIndicator('exit', id)} onToggle={(id) => handleToggleIndicator('exit', id)} />;
+            default: return <div className="text-center p-8 text-slate-500 bg-slate-50 rounded-lg">Select a configuration tab.</div>;
+        }
+    };
+
+    return (
+        <>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+                <StrategyList 
+                    strategyData={strategyData} 
+                    selectedSetId={selectedSetId} 
+                    onSelectSet={handleSetSelection} 
+                />
+
+                {activeConfig && (
+                    <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200 shadow-sm">
+                        <div className="p-5 border-b border-slate-200 flex justify-between items-start gap-4">
+                            {isEditingHeader ? (
+                                <div className="flex-1 space-y-2">
+                                    <input value={tempSetName} onChange={(e) => setTempSetName(e.target.value)} placeholder="Set Name" className="w-full text-lg font-bold p-1 -m-1 rounded-md focus:ring-1 focus:ring-indigo-500" />
+                                    <input value={tempSetDescription} onChange={(e) => setTempSetDescription(e.target.value)} placeholder="Description" className="w-full text-sm p-1 -m-1 rounded-md focus:ring-1 focus:ring-indigo-500"/>
+                                </div>
+                            ) : (
+                                <div className="flex-1">
+                                    <h2 className="text-lg font-bold text-slate-900">{activeConfig.set_config.set_name}</h2>
+                                    <p className="text-sm text-slate-500 mt-1">{activeConfig.set_config.description}</p>
+                                    <div className="mt-2"><span className="text-xs font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">ID: {activeConfig.set_config.set_id}</span></div>
+                                </div>
+                            )}
+                            <div className="flex items-center gap-4">
+                                {isEditingHeader ? (
+                                    <>
+                                        <button onClick={handleSaveHeader} className="p-1.5 text-emerald-600 hover:bg-emerald-100 rounded-full"><Check className="w-4 h-4" /></button>
+                                        <button onClick={() => setIsEditingHeader(false)} className="p-1.5 text-red-600 hover:bg-red-100 rounded-full"><X className="w-4 h-4" /></button>
+                                    </>
+                                ) : (
+                                    <button onClick={handleEditHeader} className="p-1.5 text-slate-500 hover:bg-slate-100 rounded-full"><Edit className="w-4 h-4" /></button>
+                                )}
+                                <div className="flex items-center gap-2">
+                                    <ToggleSwitch active={activeConfig.set_config.set_active_status} onClick={() => handleConfigChange('set_config.set_active_status', !activeConfig.set_config.set_active_status)} />
+                                    <span className="text-sm font-medium text-slate-700">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="border-b border-slate-200">
+                            <div className="flex space-x-4 px-5 overflow-x-auto">
+                                {(TABS[strategyType] || []).map(tab => (
+                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-1.5 py-2.5 px-1 border-b-2 text-sm font-medium whitespace-nowrap ${activeTab === tab.id ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>
+                                        <tab.icon className="w-4 h-4" /> {tab.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="p-5">{renderContent()}</div>
+                        <div className="p-4 border-t border-slate-200 bg-slate-50/50 flex justify-end rounded-b-xl">
+                            <button className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 text-sm">
+                                <Save className="w-4 h-4" /> Save Strategy
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+            <IndicatorConfigModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSave={handleSaveIndicator}
+                config={modalConfig}
+                existingIndicators={activeConfig?.[modalConfig.type === 'entry' ? 'entry_indicators' : 'exit_indicators'] || []}
+            />
+        </>
+    );
+};
+
+export default Strategies;

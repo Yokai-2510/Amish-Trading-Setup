@@ -1,0 +1,100 @@
+Strategies: 
+
+Options : 
+    - Set Configs  (This is not a tab menu but it would be there ,but not as a separate tab menu, maybe  below the title in the UI . PLACE IT SMARLY )
+        - Set ID (locked not changeable just to show )
+        - Set Name 
+        - Description 
+
+    - Instrument Selection : 
+        - "underlying_symbol": "BANKNIFTY",
+        - "underlying_key": "NSE_INDEX|Nifty Bank",
+        - "option_type": "CE",
+        - "trade_type": "Buy",
+        - "expiry": "2025-06-26",
+        - "strike_selection": "ATM",
+        - "strike_offset": 0,
+        - "custom_strike_value" : "60600" 
+
+    - Trade Configs : 
+        - order type : Market 
+        - product type : Intraday 
+        - Quantity type : Lots 
+        - Quantity Value : 1
+        - Trade Type : Paper/Live 
+        - Confirm Order from Broker : True/False
+        - Order Broker : Zerodha , Upstox , Fyers , Kotak 
+
+    - Entry Configs :
+        - Start Time 
+        - End Time  
+        - Exclude Time bool : 
+        - Exclusion Start Time : 
+        - Exclusion End time : 
+        - Entry conditions evaluation delay(seconds) : 1
+        - chart_type : heikenashi , renko , candlestick 
+        - Entry Indicators Time Frame : 5m
+
+    - Entry Indicators : 
+        - WIP 
+
+
+    - Exit Configs 
+
+        - Exit conditions evaluation delay(seconds) : 1
+        - chart_type : heikenashi , renko , candlestick 
+        - Exit Indicators Time Frame : 10m
+        - stop loss :
+            - active 
+            - type : percentage,points
+            - value : 30 
+        - target profit : 
+            - active 
+            - type : percentage,points
+            - value : 30 
+        - time based exit 
+            - active : true / false 
+            - type : fixed , from_entry_time
+            - fixed_exit_time": "15:10:00"
+            -  "from_entry_time" : "30M"
+
+    - Exit Indicators: 
+        
+
+
+
+Indicator Configuration Reference
+This list details every parameter and condition available for configuration in the UI, based on your Python backend logic.
+Indicator	Parameter Key	UI Label	Default	Description
+Moving Averages (MA)	ma_length	MA Period	20	The lookback period for the primary moving average.
+smoothing_method	MA Type	SMA	The type of moving average (SMA, EMA, WMA).
+source_data	Source	close	The candle price point to calculate from.
+offset	Offset	0	Shifts the MA forward or backward.
+smoothed_ma_length	Slow MA Period	50	The period for the second (slower) MA, used for crossover conditions.
+smoothed_ma_method	Slow MA Type	SMA	The type for the second (slower) MA.
+RSI	rsi_length	RSI Period	14	The lookback period for the RSI calculation.
+threshold_value	Threshold	30	The value to compare against for overbought/oversold conditions.
+smoothing_length	Smoothing Period	9	The period for the MA that smooths the RSI line (for crossover).
+smoothing_method	Smoothing Type	SMA	The type of MA to smooth the RSI line with.
+MACD	fast_ema_length	Fast EMA	12	The period for the faster Exponential Moving Average.
+slow_ema_length	Slow EMA	26	The period for the slower Exponential Moving Average.
+signal_line_length	Signal Line	9	The period for the EMA of the MACD line itself.
+source_data	Source	close	The candle price point to calculate from.
+Bollinger Bands	ma_length	Period	20	The lookback period for the middle band moving average.
+standard_deviation_multiplier	Std Dev	2.0	The number of standard deviations for the upper/lower bands.
+moving_average_type	MA Type	SMA	The type of moving average for the middle band.
+Supertrend	atr_length	ATR Period	10	The lookback period for the Average True Range (ATR).
+multiplier_factor	Multiplier	3.0	The factor to multiply the ATR by.
+Stochastic RSI	rsi_length	RSI Period	14	The period for the base RSI calculation.
+stoch_length	Stochastic Period	14	The lookback period for the Stochastic calculation on the RSI.
+k_smoothing_period	%K Smoothing	3	The smoothing period for the %K line.
+d_smoothing_period	%D Smoothing	3	The smoothing period for the %D line.
+k_threshold_value	%K Threshold	20	The value to compare the %K line against.
+ADX	di_length	DI Period	14	The lookback period for the Directional Indicators (+DI, -DI).
+adx_smoothing_period	ADX Smoothing	14	The smoothing period for the final ADX line.
+adx_threshold_value	ADX Threshold	25	The value to compare the ADX line against.
+Fibonacci	lookback_period	Lookback Period	20	How many recent candles to use for finding swing high/low.
+fibonacci_level	Fib Level	0.5	The Fibonacci retracement level to watch.
+reaction_tolerance	Tolerance (%)	0.01	The percentage tolerance around the Fib level to consider a "reaction".
+Up Trend	uptrend_candles	Consecutive Candles	2	Number of consecutive green candles closing higher to confirm trend.
+Down Trend	downtrend_candles	Consecutive Candles	3	Number of consecutive red candles closing lower to confirm trend.

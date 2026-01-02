@@ -1,0 +1,118 @@
+// src/components/strategies/IndicatorConfigModal.tsx
+import React, { useState, useMemo, useEffect } from 'react';
+import { X } from 'lucide-react';
+import { Indicator } from './types';
+import { FormRow, SelectInput, TextInput } from './common';
+import { INDICATOR_CONFIGS } from './indicatorConfigs';
+
+interface IndicatorModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (indicator: Indicator) => void;
+    config: { type: 'entry' | 'exit', indicatorToEdit?: Indicator };
+    existingIndicators: Indicator[];
+}
+
+const IndicatorConfigModal: React.FC<IndicatorModalProps> = ({ isOpen, onClose, onSave, config, existingIndicators }) => {
+    const [selectedType, setSelectedType] = useState('MA');
+    const [formState, setFormState] = useState<any>({});
+    
+    const indicatorConfig = useMemo(() => INDICATOR_CONFIGS[selectedType], [selectedType]);
+
+    useEffect(() => {
+        if (isOpen) {
+            const initialIndicator = config.indicatorToEdit;
+            const type = initialIndicator?.type || 'MA';
+            setSelectedType(type);
+            
+            const defaultConfig = INDICATOR_CONFIGS[type];
+            if (!defaultConfig) {
+                console.error(`Indicator configuration for type "${type}" not found.`);
+                onClose();
+                return;
+            }
+
+            const conditions = config.type === 'entry' ? defaultConfig.entry_conditions : defaultConfig.exit_conditions;
+            const initialState: any = {
+                name: initialIndicator?.name || `${type} Condition`,
+                logic: initialIndicator?.logic || (existingIndicators.length > 0 ? 'AND' : 'FIRST'),
+                active_condition: initialIndicator?.active_condition || conditions[0]?.id || '1',
+                parameters: {}
+            };
+
+            defaultConfig.params.forEach((p: any) => {
+                initialState.parameters[p.key] = initialIndicator?.parameters[p.key] ?? p.default;
+            });
+
+            setFormState(initialState);
+        }
+    }, [isOpen, config, existingIndicators, onClose]);
+
+    if (!isOpen || !indicatorConfig) return null;
+
+    const handleParamChange = (key: string, value: any) => { setFormState((p: any) => ({ ...p, parameters: { ...p.parameters, [key]: value } })) };
+    const handleFieldChange = (key: string, value: any) => { setFormState((p: any) => ({ ...p, [key]: value })) };
+
+    const handleSaveClick = () => {
+        const isEditing = !!config.indicatorToEdit;
+        const finalIndicator: Indicator = {
+            id: config.indicatorToEdit?.id || Date.now().toString(),
+            type: selectedType,
+            name: formState.name,
+            logic: isEditing ? config.indicatorToEdit!.logic : (existingIndicators.length > 0 ? formState.logic : 'FIRST'),
+            active: config.indicatorToEdit?.active ?? true,
+            parameters: formState.parameters,
+            active_condition: formState.active_condition,
+        };
+        onSave(finalIndicator);
+    };
+
+    const conditions = config.type === 'entry' ? indicatorConfig.entry_conditions : indicatorConfig.exit_conditions;
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col">
+                <div className="p-4 border-b flex justify-between items-center">
+                    <h2 className="text-lg font-bold text-slate-800">{!!config.indicatorToEdit ? `Edit ${formState.name}` : `Add ${config.type} Indicator`}</h2>
+                    <button onClick={onClose}><X className="w-5 h-5 text-slate-500" /></button>
+                </div>
+                <div className="p-5 space-y-4 overflow-y-auto">
+                    {!!!config.indicatorToEdit && ( <FormRow label="Indicator Type"><SelectInput value={selectedType} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedType(e.target.value)}>{Object.keys(INDICATOR_CONFIGS).map(k => <option key={k} value={k}>{k}</option>)}</SelectInput></FormRow> )}
+                    <FormRow label="Custom Name"><TextInput value={formState.name || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('name', e.target.value)} /></FormRow>
+                    {existingIndicators.length > 0 && !!!config.indicatorToEdit && ( <FormRow label="Logic"><SelectInput value={formState.logic} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFieldChange('logic', e.target.value)}><option>AND</option><option>OR</option></SelectInput></FormRow> )}
+                    
+                    <div className="pt-2">
+                        <h3 className="text-sm font-semibold text-slate-500 mb-2 border-b pb-2">PARAMETERS</h3>
+                        {indicatorConfig.params.map((param: any) => (
+                            <FormRow key={param.key} label={param.label}>
+                                {param.type === 'select' ? (
+                                    <SelectInput value={formState.parameters?.[param.key]} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleParamChange(param.key, e.target.value)}>
+                                        {param.options.map((o: string) => <option key={o} value={o}>{o}</option>)}
+                                    </SelectInput>
+                                ) : (
+                                    <TextInput type={param.type} value={formState.parameters?.[param.key]} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleParamChange(param.key, param.type === 'number' ? Number(e.target.value) || 0 : e.target.value)} />
+                                )}
+                            </FormRow>
+                        ))}
+                    </div>
+                    {conditions.length > 0 && (
+                        <div className="pt-2">
+                            <h3 className="text-sm font-semibold text-slate-500 mb-2 border-b pb-2">CONDITION</h3>
+                            <FormRow label="Active Condition">
+                                <SelectInput value={formState.active_condition} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFieldChange('active_condition', e.target.value)}>
+                                    {conditions.map((c: {id: string, label: string}) => <option key={c.id} value={c.id}>{c.label}</option>)}
+                                </SelectInput>
+                            </FormRow>
+                        </div>
+                    )}
+                </div>
+                <div className="p-4 border-t bg-slate-50 flex justify-end gap-3">
+                    <button onClick={onClose} className="px-4 py-2 rounded-lg border text-sm font-semibold bg-white hover:bg-slate-50">Cancel</button>
+                    <button onClick={handleSaveClick} className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">Save</button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default IndicatorConfigModal;

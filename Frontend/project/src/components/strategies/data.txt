@@ -1,0 +1,40 @@
+// src/components/strategies/data.ts
+import { StrategyConfiguration } from './types';
+
+export const mockInstruments = [
+    { symbol: 'BANKNIFTY', key: 'NSE_INDEX|Nifty Bank', expiries: ['2025-06-26', '2025-07-31', '2025-08-28'] },
+    { symbol: 'NIFTY 50', key: 'NSE_INDEX|Nifty 50', expiries: ['2025-06-26', '2025-07-31', '2025-08-28'] },
+    { symbol: 'FINNIFTY', key: 'NSE_INDEX|Nifty Fin Service', expiries: ['2025-06-24', '2025-07-29', '2025-08-26'] },
+    { symbol: 'RELIANCE', key: 'NSE|RELIANCE', expiries: ['2025-06-26', '2025-07-31'] },
+    { symbol: 'TCS', key: 'NSE|TCS', expiries: ['2025-06-26', '2025-07-31'] },
+];
+
+export const mockStrategyData: Record<string, StrategyConfiguration> = {
+  "option_set_1": { set_config: { set_id: "option_set_1", set_name: "BankNifty Multi-Indicator", description: "Trades BankNifty options using a combination of indicators.", set_active_status: true }, instrument_config: { underlying_symbol: "BANKNIFTY", underlying_key: "NSE_INDEX|Nifty Bank", option_type: "CE", trade_type: "Buy", expiry: "2025-06-26", strike_selection: "ATM", strike_offset: 0, custom_strike_value: "60600" }, trade_parameters: { order_type: "MARKET", product_type: "INTRADAY", quantity_type: "Lots", quantity_value: 1, trade_mode: "paper", bypass_order_confirmation: true, broker: "upstox" }, entry_config: { start_time: "10:20:00", end_time: "15:10:00", exclude_time_active: false, exclusion_start_time: "12:00:00", exclusion_end_time: "13:00:00", entry_check_interval: 1, chart_type: "candlestick", time_frame: "5m" }, exit_config: { exit_check_interval: 1, chart_type: "candlestick", time_frame: "10m", stop_loss: { active: true, type: "percentage", value: 30 }, target_profit: { active: true, type: "percentage", value: 30 }, time_based_exit: { active: true, type: "fixed", fixed_exit_time: "15:10:00", from_entry_time: "30M" } }, entry_indicators: [ { id: '1', type: 'RSI', name: 'RSI Oversold', logic: 'FIRST', active: true, parameters: { rsi_length: 14, threshold_value: 30 }, active_condition: '3' }], exit_indicators: [] },
+  ...Object.fromEntries(Array.from({ length: 7 }, (_, i) => [`option_set_${i + 2}`, { set_config: { set_id: `option_set_${i + 2}`, set_name: `Option Set ${i + 2}`, description: `Description for option set ${i + 2}`, set_active_status: false }, instrument_config: { underlying_symbol: "NIFTY 50", underlying_key: "NSE_INDEX|Nifty 50", option_type: "PE", trade_type: "Sell", expiry: "2025-07-31", strike_selection: "OTM", strike_offset: 2, custom_strike_value: "" }, trade_parameters: { order_type: "MARKET", product_type: "INTRADAY", quantity_type: "Lots", quantity_value: 2, trade_mode: "live", bypass_order_confirmation: false, broker: "zerodha" }, entry_config: { start_time: "09:30:00", end_time: "15:00:00", exclude_time_active: true, exclusion_start_time: "11:00:00", exclusion_end_time: "12:00:00", entry_check_interval: 2, chart_type: "heikenashi", time_frame: "3m" }, exit_config: { exit_check_interval: 2, chart_type: "renko", time_frame: "5m", stop_loss: { active: false, type: "points", value: 100 }, target_profit: { active: true, type: "points", value: 200 }, time_based_exit: { active: false, type: "from_entry_time", fixed_exit_time: "14:55:00", from_entry_time: "60M" } }, entry_indicators: [], exit_indicators: [] }])),
+  
+  // --- CORRECTED STOCK SETS DATA STRUCTURE ---
+  "stock_set_1": { 
+    set_config: { set_id: "stock_set_1", set_name: "Reliance Momentum", description: "Trades a basket of stocks based on momentum.", set_active_status: false }, 
+    instrument_config: { 
+        // This structure is now correct for StocksSelectionTab.tsx
+        stocks: [{ name: "RELIANCE", quantity: 10 }, { name: "TCS", quantity: 5 }] 
+    } as any, // Use `as any` to satisfy the broader type, while providing specific data for stocks
+    trade_parameters: { order_type: "LIMIT", product_type: "DELIVERY", quantity_type: "Quantity", quantity_value: 10, trade_mode: "paper", bypass_order_confirmation: false, broker: "kotak" }, 
+    entry_config: { start_time: "09:30:00", end_time: "15:00:00", exclude_time_active: false, exclusion_start_time: "12:00:00", exclusion_end_time: "13:20:00", entry_check_interval: 5, chart_type: "candlestick", time_frame: "15m" }, 
+    exit_config: { exit_check_interval: 1, chart_type: "candlestick", time_frame: "15m", stop_loss: { active: true, type: "points", value: 50 }, target_profit: { active: false, type: "percentage", value: 10 }, time_based_exit: { active: false, type: "fixed", fixed_exit_time: "15:10:00", from_entry_time: "15M" } }, 
+    entry_indicators: [], 
+    exit_indicators: [] 
+  },
+  ...Object.fromEntries(Array.from({ length: 3 }, (_, i) => [`stock_set_${i + 2}`, { 
+    set_config: { set_id: `stock_set_${i + 2}`, set_name: `Stock Set ${i + 2}`, description: `Description for stock set ${i + 2}`, set_active_status: false }, 
+    instrument_config: { 
+        stocks: [] // Start with an empty list for other stock sets
+    } as any,
+    trade_parameters: { order_type: "MARKET", product_type: "INTRADAY", quantity_type: "Quantity", quantity_value: 50, trade_mode: "live", bypass_order_confirmation: true, broker: "fyers" }, 
+    entry_config: { start_time: "10:00:00", end_time: "14:30:00", exclude_time_active: true, exclusion_start_time: "11:30:00", exclusion_end_time: "12:30:00", entry_check_interval: 10, chart_type: "renko", time_frame: "10m" }, 
+    exit_config: { exit_check_interval: 5, chart_type: "heikenashi", time_frame: "10m", stop_loss: { active: true, type: "percentage", value: 5 }, target_profit: { active: true, type: "percentage", value: 10 }, time_based_exit: { active: true, type: "from_entry_time", fixed_exit_time: "", from_entry_time: "60M" } }, 
+    entry_indicators: [], 
+    exit_indicators: [] 
+  }])),
+};

@@ -1,0 +1,31 @@
+// src/components/strategies/TradeConfigsTab.tsx
+import React from 'react';
+import { StrategyConfiguration } from './types';
+
+// Reusable UI components for this form
+const FormRow = ({ label, children }: { label: string; children: React.ReactNode; }) => ( <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center py-3 border-b border-slate-100 last:border-b-0"> <label className="text-sm font-medium text-slate-600">{label}</label> <div className="md:col-span-2">{children}</div> </div> );
+const ToggleSwitch = ({ active, onClick }: { active: boolean, onClick: () => void }) => ( <button onClick={onClick} className={`relative inline-flex items-center h-5 rounded-full w-9 transition-colors focus:outline-none focus-ring ${active ? 'bg-indigo-600' : 'bg-slate-300'}`}> <span className={`inline-block w-3.5 h-3.5 transform bg-white rounded-full transition-transform ${active ? 'translate-x-5' : 'translate-x-1'}`} /> </button> );
+const TextInput = ({...props}) => <input className="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" {...props} />;
+const SelectInput = ({ children, ...props }: { children: React.ReactNode, [key: string]: any }) => <select className="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 bg-white" {...props}>{children}</select>;
+
+
+interface TradeConfigsTabProps {
+  config: StrategyConfiguration['trade_parameters'];
+  onConfigChange: (path: string, value: any) => void;
+}
+
+const TradeConfigsTab: React.FC<TradeConfigsTabProps> = ({ config, onConfigChange }) => {
+  return (
+    <div>
+      <FormRow label="Order Type"><SelectInput value={config.order_type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('trade_parameters.order_type', e.target.value)}><option>MARKET</option><option>LIMIT</option></SelectInput></FormRow>
+      <FormRow label="Product Type"><SelectInput value={config.product_type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('trade_parameters.product_type', e.target.value)}><option>INTRADAY</option><option>DELIVERY</option></SelectInput></FormRow>
+      <FormRow label="Quantity Type"><SelectInput value={config.quantity_type} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('trade_parameters.quantity_type', e.target.value)}><option>Lots</option><option>Quantity</option></SelectInput></FormRow>
+      <FormRow label="Quantity Value"><TextInput type="number" value={config.quantity_value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => onConfigChange('trade_parameters.quantity_value', Number(e.target.value))} /></FormRow>
+      <FormRow label="Trade Mode"><SelectInput value={config.trade_mode} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('trade_parameters.trade_mode', e.target.value)}><option value="paper">Paper</option><option value="live">Live</option></SelectInput></FormRow>
+      <FormRow label="Confirm Order from Broker"><ToggleSwitch active={config.bypass_order_confirmation} onClick={() => onConfigChange('trade_parameters.bypass_order_confirmation', !config.bypass_order_confirmation)} /></FormRow>
+      <FormRow label="Order Broker"><SelectInput value={config.broker} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onConfigChange('trade_parameters.broker', e.target.value)}><option>Zerodha</option><option>Upstox</option><option>Fyers</option><option>Kotak</option></SelectInput></FormRow>
+    </div>
+  );
+};
+
+export default TradeConfigsTab;
